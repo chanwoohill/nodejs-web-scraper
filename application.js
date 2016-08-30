@@ -1,25 +1,27 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
+var url = 'http://substack.net/images/';
 
-
-var request = require('request');
-request('http://substack.net/images/', function (error, response, body) {
+request(url, function (error, response, body) {
   if (!error && response.statusCode == 200) {
-    $ = cheerio.load(body);
-    // console.log(body) 
- 
-// TO DO Make an HTTP GET request to http://substack.net/images/, 
-// Parse the page’s html
-// write a file to disk called images.csv File Permission/Absolute URL/File Type
+    var $ = cheerio.load(body);
 
+    var stream = fs.createWriteStream("image.csv");
+    stream.once('open', function(fd) {
 
-
-
-
-
-
+      $('tr').each(function (){
+        var row = $(this);
+        var permissions = row.find('code').first().text();
+        var url = "http://substack.net/" + row.find('a').text();
+        var filetype = url.split('.').pop();
+        if (/.+\/$/.test(filetype)) {
+          filetype = "dir"
+        }
+        console.log(permissions, url, filetype);
+        stream.write(permissions + "," + url + "," + filetype + '\n');
+        });
+    stream.end();
+    });
   }
-
-
 })

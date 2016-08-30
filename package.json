@@ -18,6 +18,7 @@
   "homepage": "https://github.com/chanwoohill/nodejs-web-scraper#readme",
   "dependencies": {
     "cheerio": "^0.22.0",
+    "json2csv": "^3.6.3",
     "request": "^2.74.0"
   }
 }
